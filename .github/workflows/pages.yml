@@ -24,9 +24,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Validate JavaScript
-        run: node --check app.js
+        run: |
+          node --check app.js
+          node --check dialog-fixes.js
       - name: Validate required files
-        run: test -s index.html && test -s styles.css && test -s app.js
+        run: test -s index.html && test -s styles.css && test -s app.js && test -s dialog-fixes.js
+      - name: Prepare static artifact
+        run: sed -i 's#</body>#<script src="dialog-fixes.js"></script></body>#' index.html
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload site
