@@ -1,0 +1,44 @@
+/* Customer editor + complete light-theme form corrections */
+.customer-dialog{width:min(680px,calc(100vw - 24px))}
+.customer-address-grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(90px,.55fr);gap:12px}
+.customer-card-address{margin-top:7px!important;line-height:1.45}
+.customer-card-actions{display:flex;gap:6px;align-items:flex-start;flex-wrap:wrap;justify-content:flex-end}
+.customer-contact-list{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.customer-contact-list a{color:var(--text);text-decoration:none}
+.customer-contact-list a:hover{color:var(--accent)}
+#newCustomerWrap{display:none!important}
+
+/* The base app intentionally uses dark control backgrounds. Override every
+   interactive/dynamic variant in light mode, not only fields inside .field. */
+html[data-theme="light"] input,
+html[data-theme="light"] select,
+html[data-theme="light"] textarea,
+html[data-theme="light"] .cost-line input,
+html[data-theme="light"] .cost-line select,
+html[data-theme="light"] .price-review-row input,
+html[data-theme="light"] .picker-search input,
+html[data-theme="light"] .mapping-row select,
+html[data-theme="light"] .kanban-card select{
+  background:#fff!important;
+  color:var(--text)!important;
+  border-color:var(--line)!important;
+  color-scheme:light;
+}
+html[data-theme="light"] input::placeholder,
+html[data-theme="light"] textarea::placeholder{color:#8a98a4}
+html[data-theme="light"] option{background:#fff;color:#15212b}
+html[data-theme="light"] .repair-totals div,
+html[data-theme="light"] .price-preview,
+html[data-theme="light"] .cost-line,
+html[data-theme="light"] .csv-diagnostics,
+html[data-theme="light"] .price-review-row{background:#fff!important;color:var(--text)}
+html[data-theme="light"] .responsive-table tr{background:#fff}
+html[data-theme="light"] .modal-actions{background:#fff}
+html[data-theme="light"] input:-webkit-autofill,
+html[data-theme="light"] input:-webkit-autofill:hover,
+html[data-theme="light"] input:-webkit-autofill:focus{-webkit-text-fill-color:#15212b;-webkit-box-shadow:0 0 0 1000px #fff inset;transition:background-color 9999s ease-out}
+
+@media(max-width:560px){
+  .customer-address-grid{grid-template-columns:1fr 90px}
+  .customer-card-actions{justify-content:flex-start;margin-top:10px}
+}
