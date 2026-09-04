@@ -31,15 +31,16 @@ jobs:
           node --check repair-ui-enhancements.js
           node --check import-pricing.js
           node --check customer-ui.js
+          node --check supplier-ui.js
           node --check margin-display.js
           node --check responsive-ui.js
       - name: Validate required files
-        run: test -s index-v2.html && test -s styles-v2.css && test -s app-v2.js && test -s csv-robust.js && test -s theme-ui.js && test -s repair-ui-enhancements.js && test -s repair-ui-enhancements.css && test -s import-pricing.js && test -s customer-ui.js && test -s customer-ui.css && test -s margin-display.js && test -s responsive-ui.css && test -s responsive-ui.js
+        run: test -s index-v2.html && test -s styles-v2.css && test -s app-v2.js && test -s csv-robust.js && test -s theme-ui.js && test -s repair-ui-enhancements.js && test -s repair-ui-enhancements.css && test -s import-pricing.js && test -s customer-ui.js && test -s customer-ui.css && test -s supplier-ui.js && test -s supplier-ui.css && test -s margin-display.js && test -s responsive-ui.css && test -s responsive-ui.js
       - name: Prepare static artifact
         run: |
           cp index-v2.html index.html
-          sed -i 's#</head>#<link rel="stylesheet" href="repair-ui-enhancements.css"><link rel="stylesheet" href="customer-ui.css"><link rel="stylesheet" href="responsive-ui.css"></head>#' index.html
-          sed -i 's#</body>#<script src="csv-robust.js"></script><script src="theme-ui.js"></script><script src="repair-ui-enhancements.js"></script><script src="import-pricing.js"></script><script src="customer-ui.js"></script><script src="margin-display.js"></script><script src="responsive-ui.js"></script></body>#' index.html
+          sed -i 's#</head>#<link rel="stylesheet" href="repair-ui-enhancements.css"><link rel="stylesheet" href="customer-ui.css"><link rel="stylesheet" href="supplier-ui.css"><link rel="stylesheet" href="responsive-ui.css"></head>#' index.html
+          sed -i 's#</body>#<script src="csv-robust.js"></script><script src="theme-ui.js"></script><script src="repair-ui-enhancements.js"></script><script src="import-pricing.js"></script><script src="customer-ui.js"></script><script src="supplier-ui.js"></script><script src="margin-display.js"></script><script src="responsive-ui.js"></script></body>#' index.html
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload site
