@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0c1117">
+  <meta name="description" content="LEDSRepair CRM voor klanten, reparaties, leveranciers en CSV-import.">
+  <title>LEDSRepair CRM</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">LR</div>
+        <div>
+          <strong>LEDSRepair</strong>
+          <span>CRM</span>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Hoofdnavigatie">
+        <button class="nav-item active" data-view="dashboard"><span>◫</span> Dashboard</button>
+        <button class="nav-item" data-view="repairs"><span>⌁</span> Reparaties</button>
+        <button class="nav-item" data-view="customers"><span>◎</span> Klanten</button>
+        <button class="nav-item" data-view="suppliers"><span>◇</span> Leveranciers</button>
+        <button class="nav-item" data-view="import"><span>⇧</span> CSV import</button>
+        <button class="nav-item" data-view="settings"><span>⚙</span> Instellingen</button>
+      </nav>
+
+      <div class="sidebar-foot">
+        <span class="online-dot"></span>
+        <span>Lokale CRM</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="icon-btn mobile-only" id="menuBtn" aria-label="Menu openen">☰</button>
+        <div>
+          <p class="eyebrow" id="viewEyebrow">Overzicht</p>
+          <h1 id="viewTitle">Dashboard</h1>
+        </div>
+        <div class="top-actions">
+          <label class="search-wrap" id="globalSearchWrap">
+            <span>⌕</span>
+            <input id="globalSearch" type="search" placeholder="Zoeken..." autocomplete="off">
+          </label>
+          <button class="btn primary" id="newRepairBtn">+ Nieuwe reparatie</button>
+        </div>
+      </header>
+
+      <section class="view active" id="view-dashboard">
+        <div class="stats-grid" id="dashboardStats"></div>
+        <div class="content-grid two-col">
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Werkvoorraad</p>
+                <h2>Recente reparaties</h2>
+              </div>
+              <button class="text-btn" data-go="repairs">Alles bekijken →</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Nr.</th><th>Klant</th><th>Toestel</th><th>Status</th><th>Deadline</th></tr></thead>
+                <tbody id="recentRepairs"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Aandacht nodig</p>
+                <h2>Openstaande acties</h2>
+              </div>
+            </div>
+            <div id="attentionList" class="attention-list"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="view-repairs">
+        <div class="toolbar">
+          <div class="segmented" id="repairStatusFilter">
+            <button class="active" data-status="all">Alle</button>
+            <button data-status="Nieuw">Nieuw</button>
+            <button data-status="Diagnose">Diagnose</button>
+            <button data-status="Wachten op onderdeel">Wachten</button>
+            <button data-status="In reparatie">In reparatie</button>
+            <button data-status="Klaar">Klaar</button>
+          </div>
+          <button class="btn secondary" id="exportRepairsBtn">Export CSV</button>
+        </div>
+        <article class="panel flush">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Nr.</th><th>Klant</th><th>Toestel</th><th>Serienummer</th><th>Status</th><th>Aangemaakt</th><th>Deadline</th><th>Bedrag</th><th></th></tr></thead>
+              <tbody id="repairsTable"></tbody>
+            </table>
+          </div>
+          <div class="empty-state hidden" id="repairsEmpty">Geen reparaties gevonden.</div>
+        </article>
+      </section>
+
+      <section class="view" id="view-customers">
+        <div class="toolbar align-end">
+          <button class="btn secondary" id="newCustomerBtn">+ Nieuwe klant</button>
+        </div>
+        <div class="cards-grid" id="customersGrid"></div>
+        <div class="empty-state hidden" id="customersEmpty">Nog geen klanten.</div>
+      </section>
+
+      <section class="view" id="view-suppliers">
+        <div class="toolbar align-end">
+          <button class="btn secondary" id="newSupplierBtn">+ Nieuwe leverancier</button>
+        </div>
+        <div class="cards-grid" id="suppliersGrid"></div>
+        <div class="empty-state hidden" id="suppliersEmpty">Nog geen leveranciers.</div>
+      </section>
+
+      <section class="view" id="view-import">
+        <div class="content-grid import-grid">
+          <article class="panel">
+            <div class="panel-head stacked">
+              <div>
+                <p class="eyebrow">Stap 1</p>
+                <h2>CSV-bestand kiezen</h2>
+                <p class="muted">De kolommen worden automatisch herkend. Eerdere mappings worden opnieuw voorgesteld.</p>
+              </div>
+            </div>
+            <label class="dropzone" id="dropzone">
+              <input type="file" id="csvFile" accept=".csv,text/csv">
+              <strong>Sleep een CSV hierheen</strong>
+              <span>of klik om een bestand te kiezen</span>
+            </label>
+            <div class="field-row">
+              <label class="field">
+                <span>Leverancier</span>
+                <select id="importSupplier"></select>
+              </label>
+              <label class="field">
+                <span>Nieuwe leverancier</span>
+                <input id="importSupplierNew" type="text" placeholder="Optioneel">
+              </label>
+            </div>
+            <div id="fileInfo" class="file-info hidden"></div>
+          </article>
+
+          <article class="panel" id="mappingPanel">
+            <div class="panel-head stacked">
+              <div>
+                <p class="eyebrow">Stap 2</p>
+                <h2>Kolommen koppelen</h2>
+                <p class="muted">Leverancier-specifieke herkenning krijgt voorrang. Daarna gebruikt de CRM globale aangeleerde mappings en slimme naamherkenning.</p>
+              </div>
+            </div>
+            <div id="mappingRows" class="mapping-rows">
+              <div class="empty-state compact">Kies eerst een CSV-bestand.</div>
+            </div>
+            <div class="mapping-actions">
+              <span class="muted" id="mappingHint"></span>
+              <button class="btn primary" id="runImportBtn" disabled>Importeren</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="view-settings">
+        <div class="settings-grid">
+          <article class="panel">
+            <p class="eyebrow">Data</p>
+            <h2>Back-up en herstel</h2>
+            <p class="muted">Alle gegevens staan momenteel lokaal in deze browser.</p>
+            <div class="button-stack">
+              <button class="btn secondary" id="backupBtn">Back-up downloaden</button>
+              <label class="btn secondary file-btn">Back-up herstellen<input type="file" id="restoreFile" accept="application/json,.json"></label>
+              <button class="btn danger" id="resetBtn">Alle lokale data wissen</button>
+            </div>
+          </article>
+          <article class="panel">
+            <p class="eyebrow">Slimme import</p>
+            <h2>Aangeleerde mappings</h2>
+            <div id="mappingStats" class="mapping-stats"></div>
+            <button class="btn secondary" id="clearMappingsBtn">Mappings wissen</button>
+          </article>
+          <article class="panel">
+            <p class="eyebrow">Systeem</p>
+            <h2>Versie</h2>
+            <dl class="info-list">
+              <div><dt>Applicatie</dt><dd>LEDSRepair CRM</dd></div>
+              <div><dt>Versie</dt><dd>0.1.0 MVP</dd></div>
+              <div><dt>Opslag</dt><dd>Browser localStorage</dd></div>
+            </dl>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="repairDialog" class="modal">
+    <form method="dialog" id="repairForm">
+      <div class="modal-head"><div><p class="eyebrow">Werkorder</p><h2 id="repairDialogTitle">Nieuwe reparatie</h2></div><button class="icon-btn" value="cancel" formnovalidate>×</button></div>
+      <input type="hidden" id="repairId">
+      <div class="form-grid">
+        <label class="field span-2"><span>Klant *</span><input id="repairCustomer" list="customerNames" required placeholder="Naam klant"></label>
+        <datalist id="customerNames"></datalist>
+        <label class="field"><span>Toestel / type *</span><input id="repairDevice" required placeholder="bv. LED module"></label>
+        <label class="field"><span>Merk</span><input id="repairBrand" placeholder="Merk"></label>
+        <label class="field"><span>Model</span><input id="repairModel" placeholder="Model"></label>
+        <label class="field"><span>Serienummer</span><input id="repairSerial" placeholder="Serienummer"></label>
+        <label class="field"><span>Status</span><select id="repairStatus"></select></label>
+        <label class="field"><span>Deadline</span><input id="repairDueDate" type="date"></label>
+        <label class="field span-2"><span>Probleemomschrijving *</span><textarea id="repairIssue" required rows="3" placeholder="Wat moet er hersteld worden?"></textarea></label>
+        <label class="field"><span>Leverancier</span><select id="repairSupplier"></select></label>
+        <label class="field"><span>Bedrag (€)</span><input id="repairPrice" type="number" min="0" step="0.01"></label>
+        <label class="field span-2"><span>Notities</span><textarea id="repairNotes" rows="3"></textarea></label>
+      </div>
+      <div class="modal-actions"><button class="btn secondary" value="cancel" formnovalidate>Annuleren</button><button class="btn primary" id="saveRepairBtn" value="default">Opslaan</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="simpleDialog" class="modal small-modal">
+    <form method="dialog" id="simpleForm">
+      <div class="modal-head"><h2 id="simpleDialogTitle"></h2><button class="icon-btn" value="cancel" formnovalidate>×</button></div>
+      <input type="hidden" id="simpleType">
+      <div id="simpleFields"></div>
+      <div class="modal-actions"><button class="btn secondary" value="cancel" formnovalidate>Annuleren</button><button class="btn primary" value="default">Opslaan</button></div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
