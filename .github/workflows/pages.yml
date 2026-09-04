@@ -29,13 +29,14 @@ jobs:
           node --check csv-robust.js
           node --check theme-ui.js
           node --check repair-ui-enhancements.js
+          node --check import-pricing.js
       - name: Validate required files
-        run: test -s index-v2.html && test -s styles-v2.css && test -s app-v2.js && test -s csv-robust.js && test -s theme-ui.js && test -s repair-ui-enhancements.js && test -s repair-ui-enhancements.css
+        run: test -s index-v2.html && test -s styles-v2.css && test -s app-v2.js && test -s csv-robust.js && test -s theme-ui.js && test -s repair-ui-enhancements.js && test -s repair-ui-enhancements.css && test -s import-pricing.js
       - name: Prepare static artifact
         run: |
           cp index-v2.html index.html
           sed -i 's#</head>#<link rel="stylesheet" href="repair-ui-enhancements.css"></head>#' index.html
-          sed -i 's#</body>#<script src="csv-robust.js"></script><script src="theme-ui.js"></script><script src="repair-ui-enhancements.js"></script></body>#' index.html
+          sed -i 's#</body>#<script src="csv-robust.js"></script><script src="theme-ui.js"></script><script src="repair-ui-enhancements.js"></script><script src="import-pricing.js"></script></body>#' index.html
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload site
