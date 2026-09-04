@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0f14">
+  <meta name="description" content="LEDSRepair CRM voor reparaties, producten, klanten en leveranciers.">
+  <title>LEDSRepair CRM</title>
+  <link rel="stylesheet" href="styles-v2.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><div class="brand-mark">LR</div><div><strong>LEDSRepair</strong><span>CRM</span></div></div>
+    <nav class="nav" aria-label="Hoofdnavigatie">
+      <button class="nav-item active" data-view="dashboard">◫ <span>Dashboard</span></button>
+      <button class="nav-item" data-view="board">▦ <span>Reparatiebord</span></button>
+      <button class="nav-item" data-view="repairs">⌁ <span>Reparaties</span></button>
+      <button class="nav-item" data-view="products">▣ <span>Producten</span></button>
+      <button class="nav-item" data-view="customers">◎ <span>Klanten</span></button>
+      <button class="nav-item" data-view="suppliers">◇ <span>Leveranciers</span></button>
+      <button class="nav-item" data-view="import">⇧ <span>CSV import</span></button>
+      <button class="nav-item" data-view="settings">⚙ <span>Instellingen</span></button>
+    </nav>
+    <div class="sidebar-foot"><span class="online-dot"></span><span>Lokale MVP</span></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="title-wrap"><button class="icon-btn mobile-only" id="menuBtn" aria-label="Menu">☰</button><div><p class="eyebrow" id="viewEyebrow">Overzicht</p><h1 id="viewTitle">Dashboard</h1></div></div>
+      <div class="top-actions">
+        <label class="search-wrap" id="globalSearchWrap"><span>⌕</span><input id="globalSearch" type="search" placeholder="Zoeken..." autocomplete="off"></label>
+        <button class="btn primary" id="newRepairBtn">+ Reparatie</button>
+      </div>
+    </header>
+
+    <section class="view active" id="view-dashboard">
+      <div class="stats-grid" id="dashboardStats"></div>
+      <div class="content-grid two-col">
+        <article class="panel"><div class="panel-head"><div><p class="eyebrow">Werkvoorraad</p><h2>Recente reparaties</h2></div><button class="text-btn" data-go="repairs">Alles bekijken →</button></div><div class="table-wrap"><table><thead><tr><th>Nr.</th><th>Klant</th><th>Toestel</th><th>Status</th><th>Deadline</th><th>Verkoop</th></tr></thead><tbody id="recentRepairs"></tbody></table></div></article>
+        <article class="panel"><div class="panel-head"><div><p class="eyebrow">Aandacht nodig</p><h2>Openstaande acties</h2></div></div><div id="attentionList" class="attention-list"></div></article>
+      </div>
+    </section>
+
+    <section class="view" id="view-board">
+      <div class="board-toolbar"><p class="muted">Sleep een kaart naar een andere kolom. Op mobiel kan je de status rechtstreeks op de kaart wijzigen.</p><button class="btn secondary" data-go="repairs">Lijstweergave</button></div>
+      <div class="kanban" id="kanbanBoard"></div>
+    </section>
+
+    <section class="view" id="view-repairs">
+      <div class="toolbar"><div class="segmented" id="repairStatusFilter"><button class="active" data-status="all">Alle</button><button data-status="Nieuw">Nieuw</button><button data-status="Diagnose">Diagnose</button><button data-status="Wachten op onderdeel">Wachten</button><button data-status="In reparatie">In reparatie</button><button data-status="Klaar">Klaar</button><button data-status="Afgehaald">Afgehaald</button></div><button class="btn secondary" id="exportRepairsBtn">Export CSV</button></div>
+      <article class="panel flush"><div class="table-wrap responsive-table"><table><thead><tr><th>Nr.</th><th>Klant</th><th>Toestel</th><th>Status</th><th>Deadline</th><th>Aankoop</th><th>Verkoop</th><th>Marge</th><th></th></tr></thead><tbody id="repairsTable"></tbody></table></div><div class="empty-state hidden" id="repairsEmpty">Geen reparaties gevonden.</div></article>
+    </section>
+
+    <section class="view" id="view-products">
+      <div class="toolbar"><div><p class="muted no-margin">Catalogus voor onderdelen en producten die je aan reparaties kan toevoegen.</p></div><button class="btn primary" id="newProductBtn">+ Product</button></div>
+      <article class="panel flush"><div class="table-wrap responsive-table"><table><thead><tr><th></th><th>Product</th><th>SKU</th><th>Leverancier</th><th>Aankoop</th><th>Verkoop</th><th>Marge</th><th></th></tr></thead><tbody id="productsTable"></tbody></table></div><div class="empty-state hidden" id="productsEmpty">Nog geen producten.</div></article>
+    </section>
+
+    <section class="view" id="view-customers"><div class="toolbar align-end"><button class="btn secondary" id="newCustomerBtn">+ Nieuwe klant</button></div><div class="cards-grid" id="customersGrid"></div><div class="empty-state hidden" id="customersEmpty">Nog geen klanten.</div></section>
+    <section class="view" id="view-suppliers"><div class="toolbar align-end"><button class="btn secondary" id="newSupplierBtn">+ Nieuwe leverancier</button></div><div class="cards-grid" id="suppliersGrid"></div><div class="empty-state hidden" id="suppliersEmpty">Nog geen leveranciers.</div></section>
+
+    <section class="view" id="view-import">
+      <div class="content-grid import-grid">
+        <article class="panel"><div class="panel-head stacked"><div><p class="eyebrow">Stap 1</p><h2>CSV-bestand kiezen</h2><p class="muted">Producten is de standaard. Je kan ook reparaties importeren. De mapping leert per leverancier én globaal.</p></div></div>
+          <div class="field-row"><label class="field"><span>Importtype</span><select id="importType"><option value="products">Producten</option><option value="repairs">Reparaties</option></select></label><label class="field"><span>Leverancier</span><select id="importSupplier"></select></label></div>
+          <label class="field top-gap"><span>Nieuwe leverancier</span><input id="importSupplierNew" type="text" placeholder="Optioneel"></label>
+          <label class="dropzone top-gap" id="dropzone"><input type="file" id="csvFile" accept=".csv,text/csv"><strong>Sleep een CSV hierheen</strong><span>of klik om een bestand te kiezen</span></label><div id="fileInfo" class="file-info hidden"></div>
+        </article>
+        <article class="panel"><div class="panel-head stacked"><div><p class="eyebrow">Stap 2</p><h2>Kolommen koppelen</h2><p class="muted">Eerst leverancier-specifiek, dan globale aangeleerde mapping, daarna automatische herkenning.</p></div></div><div id="mappingRows" class="mapping-rows"><div class="empty-state compact">Kies eerst een CSV-bestand.</div></div><div class="mapping-actions"><span class="muted" id="mappingHint"></span><button class="btn primary" id="runImportBtn" disabled>Importeren</button></div></article>
+      </div>
+    </section>
+
+    <section class="view" id="view-settings">
+      <div class="settings-grid">
+        <article class="panel"><p class="eyebrow">Werkuren</p><h2>Uurloon</h2><p class="muted">Dit tarief wordt standaard gebruikt wanneer je werkuren toevoegt aan een reparatie.</p><label class="field top-gap"><span>Uurloon excl. btw (€)</span><input id="hourlyRate" type="number" min="0" step="0.01"></label><button class="btn primary top-gap" id="saveSettingsBtn">Opslaan</button></article>
+        <article class="panel"><p class="eyebrow">Data</p><h2>Back-up en herstel</h2><p class="muted">De huidige MVP bewaart gegevens en gecomprimeerde foto's lokaal in deze browser.</p><div class="button-stack"><button class="btn secondary" id="backupBtn">Back-up downloaden</button><label class="btn secondary file-btn">Back-up herstellen<input type="file" id="restoreFile" accept="application/json,.json"></label><button class="btn danger" id="resetBtn">Alle lokale data wissen</button></div></article>
+        <article class="panel"><p class="eyebrow">Slimme import</p><h2>Aangeleerde mappings</h2><div id="mappingStats" class="mapping-stats"></div><button class="btn secondary" id="clearMappingsBtn">Mappings wissen</button></article>
+        <article class="panel"><p class="eyebrow">Systeem</p><h2>Versie</h2><dl class="info-list"><div><dt>Applicatie</dt><dd>LEDSRepair CRM</dd></div><div><dt>Versie</dt><dd>0.2.0</dd></div><div><dt>Opslag</dt><dd>Browser localStorage</dd></div></dl></article>
+      </div>
+    </section>
+  </main>
+</div>
+
+<dialog id="repairDialog" class="modal wide-modal"><form id="repairForm">
+  <div class="modal-head"><div><p class="eyebrow">Werkorder</p><h2 id="repairDialogTitle">Nieuwe reparatie</h2></div><button type="button" class="icon-btn" data-close="repairDialog">×</button></div><input type="hidden" id="repairId">
+  <div class="repair-layout">
+    <div class="repair-main">
+      <section class="form-section"><h3>Klant & toestel</h3><div class="form-grid">
+        <label class="field span-2"><span>Klant *</span><select id="repairCustomerSelect" required></select></label>
+        <label class="field span-2 hidden" id="newCustomerWrap"><span>Nieuwe klantnaam *</span><input id="repairNewCustomer" placeholder="Naam klant"></label>
+        <label class="field"><span>Toestel / type *</span><input id="repairDevice" required></label><label class="field"><span>Merk</span><input id="repairBrand"></label><label class="field"><span>Model</span><input id="repairModel"></label><label class="field"><span>Serienummer</span><input id="repairSerial"></label>
+        <label class="field"><span>Status</span><select id="repairStatus"></select></label><label class="field"><span>Deadline</span><input id="repairDueDate" type="date"></label><label class="field span-2"><span>Probleemomschrijving *</span><textarea id="repairIssue" rows="3" required></textarea></label><label class="field"><span>Leverancier</span><select id="repairSupplier"></select></label><label class="field span-2"><span>Notities</span><textarea id="repairNotes" rows="3"></textarea></label>
+      </div></section>
+
+      <section class="form-section"><div class="section-head"><div><h3>Kosten & verkoop</h3><p class="muted">Excel-feel: voeg producten, vrije regels of werkuren toe en pas bedragen indien nodig rechtstreeks aan.</p></div><div class="mini-actions"><button type="button" class="btn secondary small" id="addProductLineBtn">+ Product</button><button type="button" class="btn secondary small" id="addFreeLineBtn">+ Vrije regel</button><button type="button" class="btn secondary small" id="addLaborLineBtn">+ Werkuren</button></div></div>
+        <div class="cost-grid-head"><span>Omschrijving</span><span>Aantal</span><span>Aankoop/st.</span><span>Verkoop/st.</span><span>Totaal</span><span></span></div><div id="repairLines" class="cost-lines"></div><div class="repair-totals"><div><span>Aankoop</span><strong id="repairPurchaseTotal">€ 0,00</strong></div><div><span>Verkoop</span><strong id="repairSalesTotal">€ 0,00</strong></div><div><span>Marge</span><strong id="repairMarginTotal">€ 0,00</strong></div></div>
+      </section>
+    </div>
+    <aside class="repair-side"><section class="form-section"><h3>Foto's voor reparatie</h3><label class="photo-drop"><input id="beforePhotosInput" type="file" accept="image/*" capture="environment" multiple><span>+ Foto toevoegen</span></label><div id="beforePhotos" class="photo-grid"></div></section><section class="form-section"><h3>Foto's na reparatie</h3><label class="photo-drop"><input id="afterPhotosInput" type="file" accept="image/*" capture="environment" multiple><span>+ Foto toevoegen</span></label><div id="afterPhotos" class="photo-grid"></div></section></aside>
+  </div>
+  <div class="modal-actions"><button type="button" class="btn secondary" data-close="repairDialog">Annuleren</button><button type="submit" class="btn primary">Opslaan</button></div>
+</form></dialog>
+
+<dialog id="productDialog" class="modal"><form id="productForm"><div class="modal-head"><div><p class="eyebrow">Catalogus</p><h2 id="productDialogTitle">Nieuw product</h2></div><button type="button" class="icon-btn" data-close="productDialog">×</button></div><input type="hidden" id="productId"><div class="form-grid"><label class="field span-2"><span>Naam *</span><input id="productName" required></label><label class="field"><span>SKU / artikelnummer</span><input id="productSku"></label><label class="field"><span>Categorie</span><input id="productCategory"></label><label class="field"><span>Leverancier</span><select id="productSupplier"></select></label><label class="field"><span>Aankoopprijs (€)</span><input id="productPurchase" type="number" min="0" step="0.01"></label><label class="field"><span>Prijsberekening</span><select id="productPricingMode"><option value="margin">Marge % op aankoop</option><option value="fixed">Vaste verkoopprijs</option></select></label><label class="field" id="marginField"><span>Marge (%)</span><input id="productMargin" type="number" step="0.1" value="30"></label><label class="field hidden" id="fixedPriceField"><span>Verkoopprijs (€)</span><input id="productSale" type="number" min="0" step="0.01"></label><label class="field span-2"><span>Omschrijving</span><textarea id="productDescription" rows="2"></textarea></label><label class="field span-2"><span>Notities</span><textarea id="productNotes" rows="2"></textarea></label><div class="field span-2"><span>Productfoto</span><label class="photo-drop compact"><input id="productPhotoInput" type="file" accept="image/*" capture="environment"><span>+ Foto kiezen</span></label><div id="productPhotoPreview" class="product-photo-preview"></div></div></div><div class="price-preview"><span>Verkoopprijs</span><strong id="productSalePreview">€ 0,00</strong></div><div class="modal-actions"><button type="button" class="btn secondary" data-close="productDialog">Annuleren</button><button type="submit" class="btn primary">Opslaan</button></div></form></dialog>
+
+<dialog id="entityDialog" class="modal small-modal"><form id="entityForm"><div class="modal-head"><h2 id="entityDialogTitle"></h2><button type="button" class="icon-btn" data-close="entityDialog">×</button></div><input type="hidden" id="entityType"><div id="entityFields"></div><div class="modal-actions"><button type="button" class="btn secondary" data-close="entityDialog">Annuleren</button><button type="submit" class="btn primary">Opslaan</button></div></form></dialog>
+
+<dialog id="productPickerDialog" class="modal"><div class="modal-head"><div><p class="eyebrow">Catalogus</p><h2>Product toevoegen</h2></div><button type="button" class="icon-btn" data-close="productPickerDialog">×</button></div><div class="picker-search"><input id="productPickerSearch" type="search" placeholder="Zoek product, SKU of leverancier..."></div><div id="productPickerList" class="picker-list"></div></dialog>
+
+<dialog id="confirmDialog" class="modal confirm-modal"><div class="confirm-icon">!</div><h2 id="confirmTitle">Bevestigen</h2><p id="confirmText" class="muted"></p><div class="modal-actions"><button type="button" class="btn secondary" id="confirmCancel">Annuleren</button><button type="button" class="btn danger solid" id="confirmOk">Verwijderen</button></div></dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="app-v2.js"></script>
+</body>
+</html>
