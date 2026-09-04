@@ -27,12 +27,13 @@ jobs:
         run: |
           node --check app-v2.js
           node --check csv-robust.js
+          node --check theme-ui.js
       - name: Validate required files
-        run: test -s index-v2.html && test -s styles-v2.css && test -s app-v2.js && test -s csv-robust.js
+        run: test -s index-v2.html && test -s styles-v2.css && test -s app-v2.js && test -s csv-robust.js && test -s theme-ui.js
       - name: Prepare static artifact
         run: |
           cp index-v2.html index.html
-          sed -i 's#</body>#<script src="csv-robust.js"></script></body>#' index.html
+          sed -i 's#</body>#<script src="csv-robust.js"></script><script src="theme-ui.js"></script></body>#' index.html
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload site
